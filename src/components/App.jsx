@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
-export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      contacts: [],
+      filter: '',
+    };
+  }
 
-  const handleSubmit = ({ name, number }) => {
+  handleSubmit = ({ name, number }) => {
+    const { contacts } = this.state;
+
     if (contacts.some((contact) => contact.name === name)) {
       alert(`${name} is already in contacts!`);
       return;
@@ -20,32 +27,43 @@ export const App = () => {
       number,
     };
 
-    setContacts((prevContacts) => [...prevContacts, newContact]);
+    this.setState((prevState) => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
-  const handleDelete = (id) => {
-    setContacts((prevContacts) => prevContacts.filter((contact) => contact.id !== id));
+  handleDelete = (id) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((contact) => contact.id !== id),
+    }));
   };
 
-  const handleChangeFilter = (e) => {
-    setFilter(e.target.value);
+  handleChangeFilter = (e) => {
+    this.setState({
+      filter: e.target.value,
+    });
   };
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  render() {
+    const { contacts, filter } = this.state;
+    const filteredContacts = contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
 
-  return (
-    <div className="phonebook-frame">
-      <h1>Phonebook</h1>
+    return (
+      <div className="phonebook-frame">
+        <h1>Phonebook</h1>
 
-      <ContactForm onSubmit={handleSubmit} />
+        <ContactForm onSubmit={this.handleSubmit} />
 
-      <h2>Contacts</h2>
+        <h2>Contacts</h2>
 
-      <Filter value={filter} onChange={handleChangeFilter} />
+        <Filter value={filter} onChange={this.handleChangeFilter} />
 
-      <ContactList contacts={filteredContacts} onDelete={handleDelete} />
-    </div>
-  );
-};
+        <ContactList contacts={filteredContacts} onDelete={this.handleDelete} />
+      </div>
+    );
+  }
+}
+
+export default App;
