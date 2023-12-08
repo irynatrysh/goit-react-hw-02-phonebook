@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
-import { ContactForm } from './ContactForm/ContactForm';
+import ContactForm from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      contacts: [],
-      filter: '',
-    };
-  }
+  state = {
+    contacts: [],
+    filter: '',
+  };
 
   handleSubmit = ({ name, number }) => {
     const { contacts } = this.state;
