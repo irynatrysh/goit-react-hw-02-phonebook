@@ -10,6 +10,20 @@ class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    // Зчитування з локального сховища при завантаженні компоненту
+    const storedContacts = localStorage.getItem('contacts');
+    if (storedContacts) {
+      this.setState({ contacts: JSON.parse(storedContacts) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   handleSubmit = ({ name, number }) => {
     const { contacts } = this.state;
 
@@ -25,7 +39,7 @@ class App extends Component {
     };
 
     this.setState((prevState) => ({
-      contacts: [...prevState.contacts, newContact],
+      contacts: prevState.contacts.concat(newContact),
     }));
   };
 
